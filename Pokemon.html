@@ -1,0 +1,38 @@
+<h1>A Minha Primeira Pokédex (Back-end)</h1>
+<p>Escreve o nome de um Pokémon em letras minúsculas (ex: pikachu, charizard, ditto):</p>
+
+<input id="nomePokemon" placeholder="Nome do Pokémon">
+<button onclick="buscarPokemon()">Apanhar do Servidor!</button>
+
+<br><br>
+
+<img id="foto" src="" style="display:none; width:200px;">
+<h2 id="resultado"></h2>
+
+<script>
+  function buscarPokemon() {
+    // 1. O Front-end pega no nome que o utilizador escreveu
+    let nomeDigitado = document.getElementById('nomePokemon').value.toLowerCase();
+   
+    // 2. O 'fetch' faz o Request (Pedido) ao Back-end da PokéAPI
+    fetch(`https://pokeapi.co/api/v2/pokemon/${nomeDigitado}`)
+      .then(resposta => {
+        // Se o utilizador escrever um nome que não existe, o servidor devolve um erro
+        if (!resposta.ok) {
+          throw new Error("Pokémon não encontrado!");
+        }
+        return resposta.json();
+      })
+      .then(dados => {
+        // 3. O Response (Resposta) chegou! Agora o Front-end mostra no ecrã
+        document.getElementById('resultado').innerText = "Nome: " + dados.name.toUpperCase();
+        document.getElementById('foto').src = dados.sprites.front_default;
+        document.getElementById('foto').style.display = "block";
+      })
+      .catch(erro => {
+        // 4. O que fazer se der erro (Tratamento de Erros)
+        document.getElementById('resultado').innerText = "Pokémon não encontrado! Tenta outro.";
+        document.getElementById('foto').style.display = "none";
+      });
+  }
+</script>
